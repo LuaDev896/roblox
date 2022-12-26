@@ -84,6 +84,7 @@ local function FollowPath(targets:Vector3)
 
 		else
 
+			print("couldnt create a path!")
 			return
 
 		end

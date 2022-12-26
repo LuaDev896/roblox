@@ -14,34 +14,41 @@ local Keybind = "K"
 
 
 
+local TestSequence = {
+	{P = Vector3.new(32.4, 3.4, 0), D = 2, TZ = false},
+	{P = Vector3.new(32.5, 23.6, 136.5), D = 5,TZ = false},
+	{P = Vector3.new(32.4, 3.4, 0), D = 2,TZ = false},
+	{P = Vector3.new(0,0, 0), D = 0,TZ = false},
+}
+
+getfenv().LuaTestPathSequences101 = TestSequence
 
 
+coroutine.resume(coroutine.create(function()
 
---coroutine.resume(coroutine.create(function()
-
---	local DistOFTime = 0
---	local RecentPos = Hrp.Position
---	local LimitDist = 14
-
-
---	while true do 
-
---		DistOFTime = (Hrp.Position - RecentPos).magnitude
-
---		RecentPos = Hrp.Position
-
---		if DistOFTime >= LimitDist then
-
---			Bindable:Fire()
-
---		end
+	local DistOFTime = 0
+	local RecentPos = Hrp.Position
+	local LimitDist = 14
 
 
---		task.wait()
---	end
+	while true do 
+
+		DistOFTime = (Hrp.Position - RecentPos).magnitude
+
+		RecentPos = Hrp.Position
+
+		if DistOFTime >= LimitDist then
+
+			Bindable:Fire()
+
+		end
 
 
---end))
+		task.wait()
+	end
+
+
+end))
 
 
 
@@ -84,7 +91,6 @@ local function FollowPath(targets:Vector3)
 
 		else
 
-			print("couldnt create a path!")
 			return
 
 		end
@@ -99,10 +105,10 @@ local function FollowPath(targets:Vector3)
 			local Arrived = false
 			local TeleportSuspect = false
 
-			--local Con1 = Bindable.Event:connect(function()
-			--	TeleportSuspect = true
+			local Con1 = Bindable.Event:connect(function()
+				TeleportSuspect = true
 
-			--end)
+			end)
 
 
 			local Con2 = Hum.MoveToFinished:connect(function()
@@ -121,20 +127,20 @@ local function FollowPath(targets:Vector3)
 
 				Con2:Disconnect()
 				
-				--Con1:Disconnect()
-			--elseif Data.TZ == true then 
+				Con1:Disconnect()
+			elseif Data.TZ == true then 
 				
-			--	repeat
-			--		task.wait()
-			--	until Arrived or TeleportSuspect == true
+				repeat
+					task.wait()
+				until Arrived or TeleportSuspect == true
 				
-			--	if TeleportSuspect == true then
-			--		break
-			--	end
+				if TeleportSuspect == true then
+					break
+				end
 
-			--	Con2:Disconnect()
+				Con2:Disconnect()
 
-			--	Con1:Disconnect()
+				Con1:Disconnect()
 				
 
 			end

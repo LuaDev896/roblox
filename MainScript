@@ -126,6 +126,10 @@ local function FollowPath(targets:Vector3)
 				repeat
 					task.wait()
 				until Arrived or TeleportSuspect == true
+				
+				if TeleportSuspect == true then
+					break
+				end
 
 				Con2:Disconnect()
 

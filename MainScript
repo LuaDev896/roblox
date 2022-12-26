@@ -38,7 +38,7 @@ local function FollowPath(targets:Vector3)
 		if Data.TZ then 
 			Hrp.Anchored = false
 			Hrp.CFrame = CFrame.new(Target)
-			task.wait(1)
+			task.wait(0.25)
 		end
 		Hrp.Anchored = true
 		Hrp.CFrame = CFrame.new(Target) * CFrame.new(0,-8,0)

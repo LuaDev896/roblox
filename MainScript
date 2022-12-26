@@ -41,7 +41,7 @@ local function FollowPath(targets:Vector3)
 		
 		if Data.TZ then 
 			Hrp.CFrame = CFrame.new(Target)
-			task.wait(0.25)
+			task.wait(1)
 		end
 		
 		Hrp.CFrame = CFrame.new(Target) * CFrame.new(0,-8,0)

@@ -1,0 +1,121 @@
+local ContextService = game:GetService("ContextActionService")
+local Pathfinding = game:GetService("PathfindingService")
+local Plr = game.Players.LocalPlayer
+local Char = Plr.Character or Plr.CharacterAdded:Wait()
+local Hrp = Char:WaitForChild("HumanoidRootPart")
+local Hum = Char:WaitForChild("Humanoid")
+local InputService = game:GetService("UserInputService")
+
+local Traversing = false
+
+local Keybind = "K"
+
+
+
+
+
+
+
+
+local function FollowPath(targets:Vector3)
+	assert(Traversing == false, "Nigga stop tryna fucking tweak with this shit 💀💀")
+	print(targets)
+	Traversing = true
+	for i,Data in ipairs(targets) do
+		
+		local Target = Data.P
+		
+		print("target id ", Target)
+		local waypoints
+		local nextWaypointIndex
+		local reachedConnection
+		local blockedConnection
+		
+		
+		
+		local path = Pathfinding:CreatePath(
+			{
+				AgentRadius = 4,
+				WaypointSpacing = 4,
+				AgentHeight = 7,
+				AgentCanJump = false,
+				Costs = {
+					Water = 20
+				}
+
+			}
+		)
+		
+		local success, errorMessage = pcall(function()
+			path:ComputeAsync(Char.PrimaryPart.Position, Target)
+		end)
+		
+		if success and path.Status == Enum.PathStatus.Success then
+			-- Get the path waypoints
+			waypoints = path:GetWaypoints()
+			
+		else
+			
+			return
+			
+		end
+		
+		
+		--start moving the char to each point
+		
+		for i,v in ipairs(waypoints) do 
+			
+			
+			Hum:MoveTo(v.Position)
+			local Arrived = false
+			
+			local Con2 = Hum.MoveToFinished:connect(function()
+				Arrived = true
+				
+			end)
+			
+			repeat
+				task.wait()
+			until Arrived
+			
+			Con2:Disconnect()
+			
+			
+		end
+		
+		task.wait(Data.D)
+	end
+	
+	Traversing = false
+end
+
+
+
+task.wait(2)
+
+
+
+InputService.InputBegan:Connect(function(inpt,processed)
+	
+	if inpt.KeyCode == Enum.KeyCode[Keybind] and processed == false and Traversing == false then
+		
+		FollowPath(getfenv().LuaTestPathSequences101)
+		
+	end
+	
+	
+end)
+
+
+--[[
+local TestSequence = {
+	{P = Vector3.new(32.4, 3.4, 0), D = 2},
+	{P = Vector3.new(32.5, 23.6, 136.5), D = 5},
+	{P = Vector3.new(32.4, 3.4, 0), D = 2},
+	{P = Vector3.new(0,0, 0), D = 0},
+}
+
+getfenv().LuaTestPathSequences101 = TestSequence
+
+
+]]

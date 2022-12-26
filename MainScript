@@ -14,11 +14,7 @@ local Keybind = "K"
 
 
 
-for i,v in pairs(Char:GetChildren()) do 
-	if v:IsA("BasePart") then
-		v.CanCollide = false
-	end
-end
+
 Hrp.Anchored = true
 
 

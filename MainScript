@@ -14,14 +14,7 @@ local Keybind = "K"
 
 
 
-local TestSequence = {
-	{P = Vector3.new(32.4, 3.4, 0), D = 2, TZ = false},
-	{P = Vector3.new(32.5, 23.6, 136.5), D = 5,TZ = false},
-	{P = Vector3.new(32.4, 3.4, 0), D = 2,TZ = false},
-	{P = Vector3.new(0,0, 0), D = 0,TZ = false},
-}
 
-getfenv().LuaTestPathSequences101 = TestSequence
 
 
 coroutine.resume(coroutine.create(function()

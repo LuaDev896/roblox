@@ -14,33 +14,18 @@ local Keybind = "K"
 
 
 
-
-
-coroutine.resume(coroutine.create(function()
-
-	local DistOFTime = 0
-	local RecentPos = Hrp.Position
-	local LimitDist = 14
-
-
-	while true do 
-
-		DistOFTime = (Hrp.Position - RecentPos).magnitude
-
-		RecentPos = Hrp.Position
-
-		if DistOFTime >= LimitDist then
-
-			Bindable:Fire()
-
-		end
-
-
-		task.wait()
+for i,v in pairs(Char:GetChildren()) do 
+	if v:IsA("BasePart") then
+		v.CanCollide = false
 	end
+end
+Hrp.Anchored = true
 
 
-end))
+
+
+
+
 
 
 
@@ -53,92 +38,14 @@ local function FollowPath(targets:Vector3)
 		local Target = Data.P
 
 		print("target id ", Target)
-		local waypoints
-		local nextWaypointIndex
-		local reachedConnection
-		local blockedConnection
-
-
-
-		local path = Pathfinding:CreatePath(
-			{
-				AgentRadius = 4,
-				WaypointSpacing = 4,
-				AgentHeight = 7,
-				AgentCanJump = false,
-				Costs = {
-					Water = 20
-				}
-
-			}
-		)
-
-		local success, errorMessage = pcall(function()
-			path:ComputeAsync(Char.PrimaryPart.Position, Target)
-		end)
-
-		if success and path.Status == Enum.PathStatus.Success then
-			-- Get the path waypoints
-			waypoints = path:GetWaypoints()
-
-		else
-
-			return
-
+		
+		if Data.TZ then 
+			Hrp.CFrame = CFrame.new(Target)
+			task.wait(0.25)
 		end
-
-
-		--start moving the char to each point
-
-		for i,v in ipairs(waypoints) do 
-
-
-			Hum:MoveTo(v.Position)
-			local Arrived = false
-			local TeleportSuspect = false
-
-			local Con1 = Bindable.Event:connect(function()
-				TeleportSuspect = true
-
-			end)
-
-
-			local Con2 = Hum.MoveToFinished:connect(function()
-				Arrived = true
-
-			end)
-
-			local Tick = tick()
-
-
-			if Data.TZ == false then
-
-				repeat
-					task.wait()
-				until Arrived 
-
-				Con2:Disconnect()
-				
-				Con1:Disconnect()
-			elseif Data.TZ == true then 
-				
-				repeat
-					task.wait()
-				until Arrived or TeleportSuspect == true
-				
-				if TeleportSuspect == true then
-					break
-				end
-
-				Con2:Disconnect()
-
-				Con1:Disconnect()
-				
-
-			end
-
-
-		end
+		
+		Hrp.CFrame = CFrame.new(Target) * CFrame.new(0,-8,0)
+		
 
 		task.wait(Data.D)
 	end
@@ -148,7 +55,7 @@ end
 
 
 
-task.wait(2)
+
 
 
 
@@ -163,16 +70,3 @@ InputService.InputBegan:Connect(function(inpt,processed)
 
 end)
 
-
---[[
-local TestSequence = {
-	{P = Vector3.new(32.4, 3.4, 0), D = 2},
-	{P = Vector3.new(32.5, 23.6, 136.5), D = 5},
-	{P = Vector3.new(32.4, 3.4, 0), D = 2},
-	{P = Vector3.new(0,0, 0), D = 0},
-}
-
-getfenv().LuaTestPathSequences101 = TestSequence
-
-
-]]

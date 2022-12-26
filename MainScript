@@ -6,6 +6,8 @@ local Hrp = Char:WaitForChild("HumanoidRootPart")
 local Hum = Char:WaitForChild("Humanoid")
 local InputService = game:GetService("UserInputService")
 
+local Bindable = Instance.new("BindableEvent")
+
 local Traversing = false
 
 local Keybind = "K"
@@ -15,6 +17,32 @@ local Keybind = "K"
 
 
 
+coroutine.resume(coroutine.create(function()
+
+	local DistOFTime = 0
+	local RecentPos = Hrp.Position
+	local LimitDist = 14
+
+
+	while true do 
+
+		DistOFTime = (Hrp.Position - RecentPos).magnitude
+
+		RecentPos = Hrp.Position
+
+		if DistOFTime >= LimitDist then
+
+			Bindable:Fire()
+
+		end
+
+
+		task.wait()
+	end
+
+
+end))
+
 
 
 local function FollowPath(targets:Vector3)
@@ -22,17 +50,17 @@ local function FollowPath(targets:Vector3)
 	print(targets)
 	Traversing = true
 	for i,Data in ipairs(targets) do
-		
+
 		local Target = Data.P
-		
+
 		print("target id ", Target)
 		local waypoints
 		local nextWaypointIndex
 		local reachedConnection
 		local blockedConnection
-		
-		
-		
+
+
+
 		local path = Pathfinding:CreatePath(
 			{
 				AgentRadius = 4,
@@ -45,47 +73,73 @@ local function FollowPath(targets:Vector3)
 
 			}
 		)
-		
+
 		local success, errorMessage = pcall(function()
 			path:ComputeAsync(Char.PrimaryPart.Position, Target)
 		end)
-		
+
 		if success and path.Status == Enum.PathStatus.Success then
 			-- Get the path waypoints
 			waypoints = path:GetWaypoints()
-			
+
 		else
-			
+
 			return
-			
+
 		end
-		
-		
+
+
 		--start moving the char to each point
-		
+
 		for i,v in ipairs(waypoints) do 
-			
-			
+
+
 			Hum:MoveTo(v.Position)
 			local Arrived = false
-			
+			local TeleportSuspect = false
+
+			local Con1 = Bindable.Event:connect(function()
+				TeleportSuspect = true
+
+			end)
+
+
 			local Con2 = Hum.MoveToFinished:connect(function()
 				Arrived = true
-				
+
 			end)
-			
-			repeat
-				task.wait()
-			until Arrived
-			
-			Con2:Disconnect()
-			
-			
+
+			local Tick = tick()
+
+
+			if Data.TZ == false then
+
+				repeat
+					task.wait()
+				until Arrived 
+
+				Con2:Disconnect()
+				
+				Con1:Disconnect()
+			elseif Data.TZ == true then 
+				
+				repeat
+					task.wait()
+				until Arrived or TeleportSuspect == true
+
+				Con2:Disconnect()
+
+				Con1:Disconnect()
+				
+
+			end
+
+
 		end
-		
+
 		task.wait(Data.D)
 	end
-	
+
 	Traversing = false
 end
 
@@ -96,14 +150,14 @@ task.wait(2)
 
 
 InputService.InputBegan:Connect(function(inpt,processed)
-	
+
 	if inpt.KeyCode == Enum.KeyCode[Keybind] and processed == false and Traversing == false then
-		
+
 		FollowPath(getfenv().LuaTestPathSequences101)
-		
+
 	end
-	
-	
+
+
 end)
 
 
